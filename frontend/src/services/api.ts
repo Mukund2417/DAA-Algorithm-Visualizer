@@ -1,6 +1,6 @@
 import type { Algorithm, BenchmarkResult, ComparisonResult, Execution, Experiment, ExperimentSummary, JsonObject, RecentBenchmark } from '../types'
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
+const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, {
