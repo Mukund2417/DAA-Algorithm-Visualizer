@@ -1,0 +1,10 @@
+node_modules/
+frontend/dist/
+frontend/vite.config.js
+frontend/vite.config.d.ts
+frontend/**/*.tsbuildinfo
+backend/.pytest_cache/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/data/*.db
+.env
