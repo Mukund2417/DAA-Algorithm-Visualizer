@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import os
 import platform
 import random
 import statistics
@@ -21,8 +22,22 @@ from app.algorithms.registry import (
     catalogue,
     run_algorithm,
 )
-from app.database import experiment_summary, initialize_database, list_experiments, list_recent_benchmarks, save_benchmark_rows, save_experiment, sync_catalogue
-from app.schemas import AlgorithmRequest, BenchmarkRequest, CompareRequest, RunResponse, SaveExperimentRequest
+from app.database import (
+    experiment_summary,
+    initialize_database,
+    list_experiments,
+    list_recent_benchmarks,
+    save_benchmark_rows,
+    save_experiment,
+    sync_catalogue,
+)
+from app.schemas import (
+    AlgorithmRequest,
+    BenchmarkRequest,
+    CompareRequest,
+    RunResponse,
+    SaveExperimentRequest,
+)
 
 
 @asynccontextmanager
@@ -33,9 +48,22 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Interactive DAA Visualizer API", version="0.1.0", lifespan=lifespan)
+
+# Allow local frontend ports as well as production deployments
+origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+]
+
+# If FRONTEND_URL is set in deployment environment variables, add it
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"] if os.getenv("RENDER") else origins,  # Open for deployment or use configured origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
